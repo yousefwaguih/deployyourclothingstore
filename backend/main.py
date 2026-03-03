@@ -64,7 +64,7 @@ class CategoryResponse(BaseModel):
     name: str
     description: str
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class ProductCreate(BaseModel):
     name: str
@@ -83,7 +83,7 @@ class ProductResponse(BaseModel):
     image_url: str
     stock: int
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # FastAPI App
 app = FastAPI(title="Clothing Store API")
@@ -158,7 +158,7 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
 def health_check():
     return {"status": "healthy"}
 
-# !! لازم يكون الـ mount في الآخر بعد كل الـ endpoints !!
+# لازم يكون الـ mount في الآخر بعد كل الـ endpoints
 app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
 
 if __name__ == "__main__":
