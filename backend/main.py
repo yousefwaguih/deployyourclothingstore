@@ -159,8 +159,9 @@ def health_check():
     return {"status": "healthy"}
 
 # لازم يكون الـ mount في الآخر بعد كل الـ endpoints
-app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
-
+import os
+if os.path.exists("frontend"):
+    app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
