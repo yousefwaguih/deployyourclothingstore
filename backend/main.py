@@ -46,6 +46,32 @@ class User(Base):
 # Create Tables
 Base.metadata.create_all(bind=engine)
 
+# Auto seed data
+def seed_data():
+    db = SessionLocal()
+    try:
+        if db.query(Category).count() == 0:
+            categories = [
+                Category(name="رجالي", description="ملابس رجالية"),
+                Category(name="نسائي", description="ملابس نسائية"),
+                Category(name="أطفال", description="ملابس أطفال"),
+            ]
+            db.add_all(categories)
+            db.commit()
+
+            products = [
+                Product(name="قميص كلاسيك", description="قميص أنيق", price=199, category_id=1, image_url="https://via.placeholder.com/300", stock=50),
+                Product(name="بنطلون جينز", description="جينز مريح", price=299, category_id=1, image_url="https://via.placeholder.com/300", stock=30),
+                Product(name="فستان سهرة", description="فستان أنيق", price=450, category_id=2, image_url="https://via.placeholder.com/300", stock=20),
+                Product(name="تيشيرت أطفال", description="تيشيرت ملون", price=99, category_id=3, image_url="https://via.placeholder.com/300", stock=100),
+            ]
+            db.add_all(products)
+            db.commit()
+    finally:
+        db.close()
+
+seed_data()
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -159,9 +185,9 @@ def health_check():
     return {"status": "healthy"}
 
 # لازم يكون الـ mount في الآخر بعد كل الـ endpoints
-import os
 if os.path.exists("frontend"):
     app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
